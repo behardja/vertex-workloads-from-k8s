@@ -180,7 +180,7 @@ resource "kubernetes_config_map_v1" "notebook" {
     namespace = "jupyterhub"
   }
   data = {
-    "custom_image_tpu_job.ipynb" = file("${path.module}/../notebooks/custom_image_tpu_job.ipynb")
+    "custom_container_tpu_job.ipynb" = file("${path.module}/../notebooks/custom_container_tpu_job.ipynb")
   }
   depends_on = [kubernetes_namespace_v1.jupyterhub]
 }
