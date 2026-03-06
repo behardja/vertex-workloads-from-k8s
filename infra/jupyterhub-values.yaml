@@ -1,0 +1,60 @@
+singleuser:
+  image:
+    name: quay.io/jupyterhub/singleuser
+    tag: "4.1"
+  serviceAccountName: jupyterhub-sa
+  storage:
+    capacity: 5Gi
+    extraVolumes:
+      - name: notebook
+        configMap:
+          name: submit-tpu-job-notebook
+      - name: gcloud
+        emptyDir: {}
+    extraVolumeMounts:
+      - name: notebook
+        mountPath: /tmp/notebook
+        readOnly: true
+      - name: gcloud
+        mountPath: /opt/google-cloud-sdk
+  memory:
+    limit: 4G
+    guarantee: 2G
+  cpu:
+    limit: 2
+    guarantee: 1
+  initContainers:
+    - name: install-gcloud
+      image: google/cloud-sdk:slim
+      command: ["cp", "-r", "/usr/lib/google-cloud-sdk/.", "/opt/gcloud/"]
+      volumeMounts:
+        - name: gcloud
+          mountPath: /opt/gcloud
+  lifecycleHooks:
+    postStart:
+      exec:
+        command:
+          - "sh"
+          - "-c"
+          - |
+            cp /tmp/notebook/custom_image_tpu_job.ipynb /home/jovyan/custom_image_tpu_job.ipynb 2>/dev/null
+            echo 'export PATH=/opt/google-cloud-sdk/bin:$PATH' >> /home/jovyan/.bashrc 2>/dev/null
+            true
+  cloudMetadata:
+    blockWithIptables: false
+  extraEnv:
+    PATH: "/opt/google-cloud-sdk/bin:/opt/conda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+hub:
+  config:
+    Authenticator:
+      admin_users:
+        - admin
+    DummyAuthenticator:
+      password: "vertex"
+    JupyterHub:
+      authenticator_class: dummy
+
+proxy:
+  service:
+    type: LoadBalancer

@@ -1,0 +1,5 @@
+project_id = "sandbox-401718"
+region       = "us-central1"
+zone         = "us-central1-a"
+cluster_name = "vertex-tpu-demo"
+network      = "beusebio-network"
