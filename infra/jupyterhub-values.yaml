@@ -38,6 +38,7 @@ singleuser:
           - "-c"
           - |
             cp /tmp/notebook/custom_container_tpu_job.ipynb /home/jovyan/custom_container_tpu_job.ipynb 2>/dev/null
+            cp /tmp/notebook/prebuilt_container_tpu_job.ipynb /home/jovyan/prebuilt_container_tpu_job.ipynb 2>/dev/null
             echo 'export PATH=/opt/google-cloud-sdk/bin:$PATH' >> /home/jovyan/.bashrc 2>/dev/null
             true
   cloudMetadata:

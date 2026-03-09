@@ -112,6 +112,7 @@ resource "google_storage_bucket" "pipeline_root" {
   name                        = "${var.project_id}-tpu-pipeline-root"
   location                    = var.region
   uniform_bucket_level_access = true
+  force_destroy               = true
 }
 
 # ---------- Workload Identity ----------
@@ -180,7 +181,8 @@ resource "kubernetes_config_map_v1" "notebook" {
     namespace = "jupyterhub"
   }
   data = {
-    "custom_container_tpu_job.ipynb" = file("${path.module}/../notebooks/custom_container_tpu_job.ipynb")
+    "custom_container_tpu_job.ipynb"  = file("${path.module}/../notebooks/custom_container_tpu_job.ipynb")
+    "prebuilt_container_tpu_job.ipynb" = file("${path.module}/../notebooks/prebuilt_container_tpu_job.ipynb")
   }
   depends_on = [kubernetes_namespace_v1.jupyterhub]
 }
