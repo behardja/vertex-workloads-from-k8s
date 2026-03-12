@@ -126,10 +126,12 @@ resource "google_service_account" "jupyterhub" {
 resource "google_project_iam_member" "roles" {
   for_each = toset([
     "roles/aiplatform.user",
-    "roles/artifactregistry.reader",
-    "roles/artifactregistry.writer",
+    "roles/artifactregistry.admin",
     "roles/storage.objectAdmin",
     "roles/cloudbuild.builds.editor",
+    "roles/cloudbuild.builds.builder",
+    "roles/logging.viewer",
+    "roles/serviceusage.serviceUsageAdmin",
   ])
   project = var.project_id
   role    = each.value
